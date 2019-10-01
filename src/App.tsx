@@ -1,14 +1,27 @@
 import * as React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import Navbar from './components/layout/Navbar';
+import Dashboard from "./components/dashboard/Dashboard";
+import EmployeeDetails from './components/employees/EmployeeDetails';
+import SignIn from "./components/auth/SignIn";
+import SignUp from "./components/auth/SignUp";
 
 function App() {
     return (
         <BrowserRouter>
             <div className="App">
-                <h1>My Employees</h1>
+                <Navbar/>
+                <div className="mt-5 pt-5">
+                    <Switch>
+                        <Route exact path='/' component={Dashboard} />
+                        <Route path='/employee/:id' component={EmployeeDetails} />
+                        <Route path='/signin' component={SignIn} />
+                        <Route path='/signup' component={SignUp} />
+                    </Switch>
+                </div>
             </div>
         </BrowserRouter>
-);
+    );
 }
 
 export default App;
