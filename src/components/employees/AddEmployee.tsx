@@ -1,29 +1,67 @@
 import * as React from 'react';
 import {useEffect, useState} from "react";
 import $ from 'jquery';
+import { connect } from "react-redux";
+import { addEmployee } from "../../store/actions/employeeActions";
 
-const AddEmployee = () => {
+const AddEmployee = (props: any) => {
 
-    const [photo, setPhoto]       = useState('');
-    const [fullName, setFullName] = useState('');
+    const [photo, setPhoto]           = useState('');
+    const [fullName, setFullName]     = useState('');
     const [department, setDepartment] = useState('');
-    const [email, setEmail] = useState('');
-    const [telephone, setTelephone] = useState('');
+    const [emailAdd, setEmail]        = useState('');
+    const [telephone, setTelephone]   = useState('');
 
-    const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        //e.currentTarget.id === "email" ? setEmail(e.currentTarget.value) : setPassword(e.currentTarget.value);
+    const handleChange = (e: any): void => {
+
+        if (e.currentTarget.id === "photo") {
+            // @ts-ignore
+            setPhoto(e.currentTarget.value);
+        }
+
+        else if (e.currentTarget.id === "fullName") {
+            setFullName(e.currentTarget.value);
+        }
+
+        else if (e.currentTarget.id === "department") {
+            setDepartment(e.currentTarget.value);
+        }
+
+        else if (e.currentTarget.id === "emailAdd") {
+            setEmail(e.currentTarget.value);
+        }
+
+        else if (e.currentTarget.id === "telephone") {
+            setTelephone(e.currentTarget.value);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+
         e.preventDefault();
-        console.log(email);
+
+        if (!fullName.match(/[a-zA-zА-Я-а-я]/g)) {
+            alert("Input your fullname!");
+        }
+
+        if (photo !== "" && !photo.match(/^https?:\/\//i)) {
+            alert("Not valid URL!");
+        }
+
+        props.addEmployee({
+            photo,
+            fullName,
+            department,
+            emailAdd,
+            telephone
+        });
     };
 
     useEffect(() => {
         $(document).ready( function() {
             function readURL(input: any) {
                 if (input.files && input.files[0]) {
-                    var reader = new FileReader();
+                    let reader = new FileReader();
 
                     reader.onload = function (e: any) {
                         $('#img-upload').attr('src', e.target.result);
@@ -36,6 +74,11 @@ const AddEmployee = () => {
             $("#imgInp").change(function(){
                 readURL(this);
             });
+
+            $('.inputFullName').bind('keyup blur',function(){
+                let node: any = $(this);
+                node.val(node.val().replace(/[^a-zA-Zа-яА-Я' ]+$/g,'') ); }
+            );
         });
     });
 
@@ -44,50 +87,58 @@ const AddEmployee = () => {
             <h3 className="py-4">Add Employee</h3>
             <form onSubmit={handleSubmit}>
 
-                <div className="input-group">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text" id="inputGroupFileAddon01">Upload Image</span>
-                    </div>
-                    <div className="custom-file">
-                        <input type="file" id="imgInp" className="custom-file-input"/>
-                        <label className="custom-file-label" htmlFor="inputGroupFile01">Choose file</label>
-                    </div>
+                <div className="form-group">
+                    <input type="text"
+                           className="form-control inputFullName"
+                           id="photo"
+                           placeholder="Photo URL"
+                           onChange={handleChange}
+                    />
                 </div>
-                <img id='img-upload' alt="" className="my-3"/>
+                <img src={photo} id='img-upload' alt="" className="my-3"/>
 
                 <div className="form-group">
                     <input type="text"
-                           className="form-control"
+                           className="form-control inputFullName"
                            id="fullName"
                            placeholder="Full Name"
                            onChange={handleChange}
+                           required
                     />
+                    <div className="invalid-feedback">
+                        Please provide a valid city.
+                    </div>
                 </div>
 
                 <div className="form-group">
-                    <input type="text"
-                           className="form-control"
-                           id="department"
-                           placeholder="Department"
-                           onChange={handleChange}
-                    />
+                    <select className="custom-select" id="department" value={department} onChange={handleChange} required>
+                        <option value="" hidden>Department</option>
+                        <option value="Frontend">Frontend</option>
+                        <option value="Backend">Backend</option>
+                        <option value="Design">Design</option>
+                        <option value="HR">HR</option>
+                        <option value="Testing">Testing</option>
+                        <option value="Management">Management</option>
+                    </select>
                 </div>
 
                 <div className="form-group">
                     <input type="email"
                            className="form-control"
-                           id="email"
+                           id="emailAdd"
                            placeholder="Email"
                            onChange={handleChange}
+                           required
                     />
                 </div>
 
                 <div className="form-group">
-                    <input type="text"
+                    <input type="number"
                            className="form-control"
                            id="telephone"
                            placeholder="Telephone"
                            onChange={handleChange}
+                           required
                     />
                 </div>
 
@@ -97,4 +148,10 @@ const AddEmployee = () => {
     )
 };
 
-export default AddEmployee;
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        addEmployee: (employee: any) => dispatch(addEmployee(employee))
+    }
+};
+
+export default connect(null, mapDispatchToProps)(AddEmployee);

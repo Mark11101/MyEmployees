@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const SignUp = () => {
 
-    const [email, setEmail]           = useState('');
+    const [emailSignUp, setEmail]           = useState('');
     const [password, setPassword]     = useState('');
     const [firstName, setFirstName]   = useState('');
     const [secondName, setSecondName] = useState('');
@@ -14,7 +14,7 @@ const SignUp = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        console.log(email);
+        console.log(emailSignUp);
     };
 
     return (
@@ -24,7 +24,7 @@ const SignUp = () => {
                 <div className="form-group">
                     <input type="email"
                            className="form-control"
-                           id="email"
+                           id="emailSignUp"
                            placeholder="Enter email"
                            onChange={handleChange}
                     />

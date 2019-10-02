@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const SignIn = () => {
 
-    const [email, setEmail]       = useState('');
+    const [emailSignIn, setEmail]       = useState('');
     const [password, setPassword] = useState('');
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -12,7 +12,7 @@ const SignIn = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        console.log(email);
+        console.log(emailSignIn);
     };
 
     return (
@@ -22,7 +22,7 @@ const SignIn = () => {
                 <div className="form-group">
                     <input type="email"
                            className="form-control"
-                           id="email"
+                           id="emailSignIn"
                            placeholder="Enter email"
                            onChange={handleChange}
                     />

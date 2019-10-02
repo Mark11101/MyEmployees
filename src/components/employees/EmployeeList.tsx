@@ -1,15 +1,10 @@
 import * as React from 'react';
 import EmployeeSummary from './EmployeeSummary';
 
-const EmployeeList = () => {
+const EmployeeList = ({employees}: any) => {
   return (
       <div className="card-columns">
-        <EmployeeSummary />
-        <EmployeeSummary />
-        <EmployeeSummary />
-        <EmployeeSummary />
-        <EmployeeSummary />
-        <EmployeeSummary />
+          <EmployeeSummary employees={employees}/>
       </div>
   )
 };
