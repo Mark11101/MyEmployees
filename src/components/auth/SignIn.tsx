@@ -1,9 +1,13 @@
 import * as React from 'react';
 import { useState } from "react";
+import { connect } from "react-redux";
+import { signIn } from "../../store/actions/authActions";
 
-const SignIn = () => {
+const SignIn = (props: any) => {
 
-    const [emailSignIn, setEmail]       = useState('');
+    const { authError } = props;
+
+    const [emailSignIn, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -12,7 +16,10 @@ const SignIn = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        console.log(emailSignIn);
+        props.signIn({
+            emailSignIn,
+            password
+        })
     };
 
     return (
@@ -36,9 +43,24 @@ const SignIn = () => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary my-3">Sign In</button>
+                <div className="red-text center">
+                    { authError ? <p>{authError}</p> : null }
+                </div>
             </form>
         </div>
     )
 };
 
-export default SignIn;
+const mapStateToProps = (state: any) => {
+    return {
+        authError: state.auth.authError
+    }
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        signIn: (creds: any) => dispatch(signIn(creds))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

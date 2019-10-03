@@ -15,7 +15,6 @@ const AddEmployee = (props: any) => {
     const handleChange = (e: any): void => {
 
         if (e.currentTarget.id === "photo") {
-            // @ts-ignore
             setPhoto(e.currentTarget.value);
         }
 
@@ -75,7 +74,7 @@ const AddEmployee = (props: any) => {
                 readURL(this);
             });
 
-            $('.inputFullName').bind('keyup blur',function(){
+            $('#inputFullName').bind('keyup blur',function(){
                 let node: any = $(this);
                 node.val(node.val().replace(/[^a-zA-Zа-яА-Я' ]+$/g,'') ); }
             );

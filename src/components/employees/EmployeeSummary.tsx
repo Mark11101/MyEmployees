@@ -5,8 +5,8 @@ const getEmployees = (department: string, employees: any): object => {
     return employees && employees.map((employee: { department: string, fullName: string, id: number }) => {
         if (employee.department === department) {
             return (
-                <Link to={'/employee/' + employee.id}>
-                    <li className="list-group-item" key={employee.id}>{employee.fullName}</li>
+                <Link to={'/employee/' + employee.id} key={employee.id}>
+                    <li className="list-group-item">{employee.fullName}</li>
                 </Link>
             )
         } else {

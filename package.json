@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@google-cloud/storage": "^3.3.1",
     "@types/react-redux": "^7.1.4",
     "@types/react-router-dom": "^5.1.0",
     "@types/redux-thunk": "^2.1.0",
