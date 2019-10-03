@@ -23,6 +23,7 @@ const Dashboard = (props: any) => {
 };
 
 const mapStateToProps = (state: any) => {
+
     return {
         employees: state.firestore.ordered.employees,
         auth: state.firebase.auth
@@ -32,7 +33,7 @@ const mapStateToProps = (state: any) => {
 export default compose (
     connect(mapStateToProps),
     firestoreConnect([
-        { collection: 'employees' }
+        { collection: 'employees', orderBy: ['createdAt', 'desc']}
     ])
 )(
     // @ts-ignore

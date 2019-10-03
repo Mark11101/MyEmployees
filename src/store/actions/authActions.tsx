@@ -1,10 +1,12 @@
+import * as firebase from "firebase";
+
 export const signIn = (credentials: any) => {
     return (dispatch: any, getState: any, { getFirebase }: any) => {
 
         const firebase = getFirebase();
 
         firebase.auth().signInWithEmailAndPassword (
-            credentials.emailSignIn,
+            credentials.email,
             credentials.password
         ).then(() => {
             dispatch({ type: 'LOGIN_SUCCESS' });
@@ -25,19 +27,33 @@ export const signOut = () => {
     }
 };
 
+let config = {
+    apiKey: "AIzaSyCzQfZE1llM6SshUMq3HuDZ-yUbJvQ4LV0",
+    authDomain: "myemployees-9a164.firebaseapp.com",
+    databaseURL: "https://myemployees-9a164.firebaseio.com",
+};
+
+let secondaryApp = firebase.initializeApp(config, "Secondary");
+
 export const signUp = (newUser: any) => {
     return (dispatch: any, getState: any, { getFirebase, getFirestore }: any) => {
 
-        const firebase = getFirebase();
+        //const firebase  = getFirebase();
         const firestore = getFirestore();
 
-        firebase.auth().createUserWithEmailAndPassword(
-            newUser.emailSignUp,
+        const fullName  = newUser.fullName.split(" ");
+        const firstName = fullName[1];
+        const lastName  = fullName[0];
+        const initials  = lastName[0] + firstName[0];
+
+        secondaryApp.auth().createUserWithEmailAndPassword(
+            newUser.email,
             newUser.password
         ).then((resp: any) => {
-            return firestore.collection('users').doc(resp.user.uid).set({
+            secondaryApp.auth().signOut();
+            return firestore.collection('users').add({
                 ...newUser,
-                initials: newUser.lastName[0] + newUser.firstName[0],
+                initials: initials,
                 type: "visitor",
             })
         }).then(() => {

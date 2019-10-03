@@ -4,8 +4,8 @@ import Navbar from './components/layout/Navbar';
 import Dashboard from "./components/dashboard/Dashboard";
 import EmployeeDetails from './components/employees/EmployeeDetails';
 import SignIn from "./components/auth/SignIn";
-import SignUp from "./components/auth/SignUp";
 import AddEmployee from "./components/employees/AddEmployee";
+import AddUser from "./components/employees/AddUser";
 
 function App() {
     return (
@@ -17,8 +17,8 @@ function App() {
                         <Route exact path='/' component={Dashboard} />
                         <Route path='/employee/:id' component={EmployeeDetails} />
                         <Route path='/signin' component={SignIn} />
-                        <Route path='/signup' component={SignUp} />
                         <Route path='/addEmployee' component={AddEmployee} />
+                        <Route path='/addUser' component={AddUser} />
                     </Switch>
                 </div>
             </div>

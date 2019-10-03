@@ -24,7 +24,7 @@ const EmployeeDetails = (props: any) => {
                         <ul className="list-group list-group-flush">
                             <li className="list-group-item">Fullname: {employee.fullName}</li>
                             <li className="list-group-item">Department: {employee.department}</li>
-                            <li className="list-group-item">Email: {employee.emailAdd}</li>
+                            <li className="list-group-item">Email: {employee.email}</li>
                             <li className="list-group-item">Telephone: {employee.telephone}</li>
                         </ul>
                     </div>

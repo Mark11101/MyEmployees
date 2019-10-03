@@ -7,10 +7,12 @@ import { Redirect } from "react-router-dom";
 
 const AddEmployee = (props: any) => {
 
+    const { auth, authError } = props;
+
     const [photo, setPhoto]           = useState('');
     const [fullName, setFullName]     = useState('');
     const [department, setDepartment] = useState('');
-    const [emailAdd, setEmail]        = useState('');
+    const [email, setEmail]           = useState('');
     const [telephone, setTelephone]   = useState('');
 
     const handleChange = (e: any): void => {
@@ -27,7 +29,7 @@ const AddEmployee = (props: any) => {
             setDepartment(e.currentTarget.value);
         }
 
-        else if (e.currentTarget.id === "emailAdd") {
+        else if (e.currentTarget.id === "email") {
             setEmail(e.currentTarget.value);
         }
 
@@ -52,11 +54,12 @@ const AddEmployee = (props: any) => {
             photo,
             fullName,
             department,
-            emailAdd,
+            email,
             telephone
         });
 
         props.history.push('/');
+
     };
 
     useEffect(() => {
@@ -83,8 +86,6 @@ const AddEmployee = (props: any) => {
             );
         });
     });
-
-    const { auth } = props;
 
     if (!auth.uid) {
         return <Redirect to='/signin' />
@@ -113,9 +114,6 @@ const AddEmployee = (props: any) => {
                            onChange={handleChange}
                            required
                     />
-                    <div className="invalid-feedback">
-                        Please provide a valid city.
-                    </div>
                 </div>
 
                 <div className="form-group">
@@ -133,7 +131,7 @@ const AddEmployee = (props: any) => {
                 <div className="form-group">
                     <input type="email"
                            className="form-control"
-                           id="emailAdd"
+                           id="email"
                            placeholder="Email"
                            onChange={handleChange}
                            required

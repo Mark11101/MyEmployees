@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
-let firebaseConfig = {
+export let firebaseConfig = {
     apiKey: "AIzaSyCzQfZE1llM6SshUMq3HuDZ-yUbJvQ4LV0",
     authDomain: "myemployees-9a164.firebaseapp.com",
     databaseURL: "https://myemployees-9a164.firebaseio.com",

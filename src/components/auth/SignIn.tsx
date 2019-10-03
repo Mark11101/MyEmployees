@@ -3,28 +3,43 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { signIn } from "../../store/actions/authActions";
 import { Redirect } from "react-router-dom";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 
 const SignIn = (props: any) => {
 
-    const { authError, auth } = props;
+    const { authError, auth, employees } = props;
 
-    const [emailSignIn, setEmail] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        e.currentTarget.id === "emailSignIn" ? setEmail(e.currentTarget.value) : setPassword(e.currentTarget.value);
+        e.currentTarget.id === "email" ? setEmail(e.currentTarget.value) : setPassword(e.currentTarget.value);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         props.signIn({
-            emailSignIn,
+            email,
             password
         })
     };
 
+    const getEmployeeId = () => {
+
+        let employeeId;
+
+        employees && employees.map((employee: any) => {
+            if (auth.email === employee.email) {console.log("fff");
+                employeeId = employee.id;
+            }
+        });
+
+        return employeeId
+    };
+
     if (auth.uid) {
-        return <Redirect to='/' />
+        return <Redirect to={'/employee/' + getEmployeeId()}/>
     }
 
     return (
@@ -34,7 +49,7 @@ const SignIn = (props: any) => {
                 <div className="form-group">
                     <input type="email"
                            className="form-control"
-                           id="emailSignIn"
+                           id="email"
                            placeholder="Enter email"
                            onChange={handleChange}
                     />
@@ -49,7 +64,7 @@ const SignIn = (props: any) => {
                 </div>
                 <button type="submit" className="btn btn-primary my-3">Sign In</button>
                 <div className="text-danger text-center pb-4">
-                    { authError ? <p>{authError}</p> : null }
+                    { authError && email !== '' ? <p>{authError}</p> : null }
                 </div>
             </form>
         </div>
@@ -59,7 +74,8 @@ const SignIn = (props: any) => {
 const mapStateToProps = (state: any) => {
     return {
         authError: state.auth.authError,
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        employees: state.firestore.ordered.employees,
     }
 };
 
@@ -69,4 +85,12 @@ const mapDispatchToProps = (dispatch: any) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default compose (
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect([
+        { collection: 'employees', orderBy: ['createdAt', 'desc']}
+    ])
+)(
+    // @ts-ignore
+    SignIn
+)
