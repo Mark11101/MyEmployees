@@ -2,24 +2,30 @@ import * as React from 'react';
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
+import { Redirect } from "react-router-dom";
+import noImage from "../../images/noimage.png";
 
 const EmployeeDetails = (props: any) => {
 
-    const { employee } = props;
+    const { employee, auth } = props;
+
+    if (!auth.uid) {
+        return <Redirect to='/signin' />
+    }
 
     if (employee) {
         return (
             <div className="card">
                 <div className="row no-gutters">
                     <div className="col-md-3">
-                        <img src={employee.photo} className="card-img" alt="..." />
+                        <img src={employee.photo ? employee.photo : noImage} className="card-img" alt="..." />
                     </div>
                     <div className="col-md-9 mt-3">
                         <ul className="list-group list-group-flush">
-                            <li className="list-group-item">{employee.fullName}</li>
-                            <li className="list-group-item">{employee.department}</li>
-                            <li className="list-group-item">{employee.emailAdd}</li>
-                            <li className="list-group-item">{employee.telephone}</li>
+                            <li className="list-group-item">Fullname: {employee.fullName}</li>
+                            <li className="list-group-item">Department: {employee.department}</li>
+                            <li className="list-group-item">Email: {employee.emailAdd}</li>
+                            <li className="list-group-item">Telephone: {employee.telephone}</li>
                         </ul>
                     </div>
                 </div>
@@ -41,7 +47,8 @@ const mapStateToProps = (state: any, ownProps: any) => {
     const employee = employees ? employees[id] : null;
 
     return {
-        employee: employee
+        employee: employee,
+        auth: state.firebase.auth
     }
 };
 

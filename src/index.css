@@ -1,5 +1,9 @@
 body {
-    background: #041021 url(images/office.jpg) no-repeat fixed center center;
+    background: #030303 url(images/office.jpg) no-repeat fixed center center;
+}
+
+.nav-link {
+    color: #ffffff!important;
 }
 
 .nav-link:hover {
@@ -15,4 +19,14 @@ body {
     margin-top: -1px;
     margin-left: -1px;
     margin-bottom: -1px;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+.userIcon {
+    border-radius: 15%;
+    background-color: #e91e63;
+    color: #ffffff;
 }

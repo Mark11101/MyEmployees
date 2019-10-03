@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import $ from 'jquery';
 import { connect } from "react-redux";
 import { addEmployee } from "../../store/actions/employeeActions";
+import { Redirect } from "react-router-dom";
 
 const AddEmployee = (props: any) => {
 
@@ -54,6 +55,8 @@ const AddEmployee = (props: any) => {
             emailAdd,
             telephone
         });
+
+        props.history.push('/');
     };
 
     useEffect(() => {
@@ -80,6 +83,12 @@ const AddEmployee = (props: any) => {
             );
         });
     });
+
+    const { auth } = props;
+
+    if (!auth.uid) {
+        return <Redirect to='/signin' />
+    }
 
     return (
         <div className="container bg-light rounded">
@@ -147,10 +156,16 @@ const AddEmployee = (props: any) => {
     )
 };
 
+const mapStateToProps = (state: any) => {
+    return {
+        auth: state.firebase.auth
+    }
+};
+
 const mapDispatchToProps = (dispatch: any) => {
     return {
         addEmployee: (employee: any) => dispatch(addEmployee(employee))
     }
 };
 
-export default connect(null, mapDispatchToProps)(AddEmployee);
+export default connect(mapStateToProps, mapDispatchToProps)(AddEmployee);

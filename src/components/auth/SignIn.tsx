@@ -2,16 +2,17 @@ import * as React from 'react';
 import { useState } from "react";
 import { connect } from "react-redux";
 import { signIn } from "../../store/actions/authActions";
+import { Redirect } from "react-router-dom";
 
 const SignIn = (props: any) => {
 
-    const { authError } = props;
+    const { authError, auth } = props;
 
     const [emailSignIn, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
-        e.currentTarget.id === "email" ? setEmail(e.currentTarget.value) : setPassword(e.currentTarget.value);
+        e.currentTarget.id === "emailSignIn" ? setEmail(e.currentTarget.value) : setPassword(e.currentTarget.value);
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -21,6 +22,10 @@ const SignIn = (props: any) => {
             password
         })
     };
+
+    if (auth.uid) {
+        return <Redirect to='/' />
+    }
 
     return (
         <div className="container bg-light rounded">
@@ -43,7 +48,7 @@ const SignIn = (props: any) => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary my-3">Sign In</button>
-                <div className="red-text center">
+                <div className="text-danger text-center pb-4">
                     { authError ? <p>{authError}</p> : null }
                 </div>
             </form>
@@ -53,7 +58,8 @@ const SignIn = (props: any) => {
 
 const mapStateToProps = (state: any) => {
     return {
-        authError: state.auth.authError
+        authError: state.auth.authError,
+        auth: state.firebase.auth
     }
 };
 

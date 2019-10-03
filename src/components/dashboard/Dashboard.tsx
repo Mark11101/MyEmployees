@@ -3,10 +3,15 @@ import EmployeeList from '../employees/EmployeeList';
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
+import { Redirect } from "react-router-dom";
 
 const Dashboard = (props: any) => {
 
-    const { employees } = props;
+    const { employees, auth } = props;
+
+    if (!auth.uid) {
+        return <Redirect to='/signin'/>
+    }
 
     return (
         <div className="dashboard container">
@@ -20,6 +25,7 @@ const Dashboard = (props: any) => {
 const mapStateToProps = (state: any) => {
     return {
         employees: state.firestore.ordered.employees,
+        auth: state.firebase.auth
     }
 };
 
