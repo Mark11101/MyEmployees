@@ -5,7 +5,20 @@ import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import noImage from "../../images/noimage.png";
 
-const EmployeeDetails = (props: any) => {
+interface propsType {
+    employee: {
+        photo: string;
+        fullName: string;
+        department: string;
+        email: string;
+        telephone: string
+    };
+    auth: {
+        uid: string
+    };
+}
+
+const EmployeeDetails = (props: propsType) => {
 
     const { employee, auth } = props;
 
@@ -42,7 +55,7 @@ const EmployeeDetails = (props: any) => {
 
 const mapStateToProps = (state: any, ownProps: any) => {
 
-    const id = ownProps.match.params.id;
+    const id: string = ownProps.match.params.id;
     const employees = state.firestore.data.employees;
     const employee = employees ? employees[id] : null;
 

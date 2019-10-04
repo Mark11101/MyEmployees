@@ -6,7 +6,17 @@ import { Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
-const SignIn = (props: any) => {
+interface propsType {
+    authError: string;
+    auth: {
+        email: string;
+        uid: string
+    }
+    employees: any;
+    signIn: any;
+}
+
+const SignIn = (props: propsType): object => {
 
     const { authError, auth, employees } = props;
 
@@ -25,17 +35,17 @@ const SignIn = (props: any) => {
         })
     };
 
-    const getEmployeeId = () => {
+    const getEmployeeId = (): string => {
 
-        let employeeId = 0;
+        let employeeId: string = '';
 
-        employees && employees.map((employee: any) => {
+        employees && employees.map((employee: {email: string, id: string}) => {
 
             if (auth.email === employee.email) {
                 employeeId = employee.id;
             }
 
-            return null;
+            return '';
         });
 
         return employeeId
@@ -43,9 +53,9 @@ const SignIn = (props: any) => {
 
     if (auth.uid) {
 
-        let id = getEmployeeId();
+        let id: string = getEmployeeId();
 
-        if (id === 0) {
+        if (id === '') {
             return <Redirect to='/'/>
         } else {
             return <Redirect to={'/employee/' + id}/>
@@ -81,7 +91,7 @@ const SignIn = (props: any) => {
     )
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any): object => {
     return {
         authError: state.auth.authError,
         auth: state.firebase.auth,
@@ -89,9 +99,9 @@ const mapStateToProps = (state: any) => {
     }
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: any): object => {
     return {
-        signIn: (creds: any) => dispatch(signIn(creds))
+        signIn: (creds: {email: string, password: string}) => dispatch(signIn(creds))
     }
 };
 

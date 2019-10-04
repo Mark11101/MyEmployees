@@ -5,14 +5,23 @@ import { signOut } from "../../store/actions/authActions";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
-const SignedInLinks = (props: any) => {
+interface propsType {
+    users: any;
+    employees: any;
+    signOut: any;
+    auth: {
+        email: string
+    }
+}
+
+const SignedInLinks = (props: propsType) => {
 
     const { auth, employees, users } = props;
 
     let userIsAdmin: boolean = false;
 
     const checkIfUserIsAdmin = () => {
-        users && users.map((user: any) => {
+        users && users.map((user: { email: string; type: string }) => {
 
             if ((auth.email === user.email) && user.type === "admin") {
                 userIsAdmin = true;
@@ -22,11 +31,11 @@ const SignedInLinks = (props: any) => {
         })
     };
 
-    const getEmployeeId = () => {
+    const getEmployeeId = (): string => {
 
-        let employeeId = 0;
+        let employeeId: string = '0';
 
-        employees && employees.map((employee: any) => {
+        employees && employees.map((employee: { email: string; id: string }) => {
 
             if (auth.email === employee.email) {
                 employeeId = employee.id;
@@ -40,15 +49,15 @@ const SignedInLinks = (props: any) => {
 
     checkIfUserIsAdmin();
 
-    const outMyDataBtn = () => {
+    const outMyDataBtn = (): object => {
 
-        let id = getEmployeeId();
+        let id: string = getEmployeeId();
 
-        if (id === 0 && userIsAdmin) {
+        if (id === '0' && userIsAdmin) {
             return <li><NavLink to='/addEmployee' className="btn userIcon">My Data</NavLink></li>
         }
 
-        else if (id === 0 && !userIsAdmin) {
+        else if (id === '0' && !userIsAdmin) {
             return <li><NavLink to='/' className="btn userIcon">My Data</NavLink></li>
         }
 
@@ -60,7 +69,7 @@ const SignedInLinks = (props: any) => {
     const outAdminButtons = () => {
         if (userIsAdmin) {
             return (
-                <div className="row">
+                <div className="addButtons">
                     <li className="nav-item"><NavLink to='/addUser' className="nav-link mr-5" href="#">Add user</NavLink></li>
                     <li className="nav-item"><NavLink to='/addEmployee' className="nav-link mr-5" href="#">Add employee</NavLink></li>
                 </div>
@@ -71,7 +80,7 @@ const SignedInLinks = (props: any) => {
     return (
         <ul className="navbar-nav ml-auto">
             {outAdminButtons()}
-            <li className="nav-item nav-link mr-5"><a onClick={props.signOut}>Log Out</a></li>
+            <li className="nav-item mr-5"><span className="logOut nav-link" onClick={props.signOut}>Log Out</span></li>
             {outMyDataBtn()}
         </ul>
     );

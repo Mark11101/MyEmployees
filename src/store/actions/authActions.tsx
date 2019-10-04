@@ -1,6 +1,11 @@
-import * as firebase from "firebase";
+import * as firebase from "firebase/app";
 
-export const signIn = (credentials: any) => {
+interface loginDataType {
+    email: string;
+    password: string;
+}
+
+export const signIn = (credentials: loginDataType) => {
     return (dispatch: any, getState: any, { getFirebase }: any) => {
 
         const firebase = getFirebase();
@@ -10,7 +15,7 @@ export const signIn = (credentials: any) => {
             credentials.password
         ).then(() => {
             dispatch({ type: 'LOGIN_SUCCESS' });
-        }).catch((err: any) => {
+        }).catch((err: never) => {
             dispatch({ type: 'LOGIN_ERROR', err });
         })
     }
@@ -35,16 +40,15 @@ let config = {
 
 let secondaryApp = firebase.initializeApp(config, "Secondary");
 
-export const signUp = (newUser: any) => {
-    return (dispatch: any, getState: any, { getFirebase, getFirestore }: any) => {
+export const signUp = (newUser: loginDataType) => {
+    return (dispatch: any, getState: any, { getFirestore }: any) => {
 
-        //const firebase  = getFirebase();
         const firestore = getFirestore();
 
         secondaryApp.auth().createUserWithEmailAndPassword(
             newUser.email,
             newUser.password
-        ).then((resp: any) => {
+        ).then(() => {
             secondaryApp.auth().signOut();
             return firestore.collection('users').add({
                 ...newUser,
@@ -53,7 +57,7 @@ export const signUp = (newUser: any) => {
         }).then(() => {
             dispatch({ type: 'SIGNUP_SUCCESS'})
         }).catch((err: any) => {
-            dispatch({ type: 'SIGNUP_ERROR', err})
+            dispatch({ type: 'SIGNUP_ERROR', err })
         })
     }
 };

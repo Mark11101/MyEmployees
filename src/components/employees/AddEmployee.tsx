@@ -7,9 +7,19 @@ import { Redirect } from "react-router-dom";
 import {compose} from "redux";
 import {firestoreConnect} from "react-redux-firebase";
 
-const AddEmployee = (props: any) => {
+interface propsType {
+    employees: any;
+    auth: {
+        email: string;
+        uid: string
+    };
+    addEmployee: any;
+    history: any;
+}
 
-    const { auth, users } = props;
+const AddEmployee = (props: propsType) => {
+
+    const { auth, employees } = props;
 
     const [photo, setPhoto]           = useState('');
     const [fullName, setFullName]     = useState('');
@@ -42,10 +52,10 @@ const AddEmployee = (props: any) => {
 
     let emailAlreadyExist: boolean = false;
 
-    const checkIfEmailAlreadyExist = () => {
-        users && users.map((user: any) => {
+    const checkIfEmailAlreadyExist = (): any => {
+        employees && employees.map((employee: { email: string }) => {
 
-            if (user.email === email) {
+            if (employee.email === email) {
                 emailAlreadyExist = true;
             }
 
@@ -53,9 +63,7 @@ const AddEmployee = (props: any) => {
         })
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): any => {
-
-        e.preventDefault();
+    const checkValidInput = (): any => {
 
         checkIfEmailAlreadyExist();
 
@@ -73,6 +81,15 @@ const AddEmployee = (props: any) => {
             alert("Not valid URL!");
             return null;
         }
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): any => {
+
+        e.preventDefault();
+
+        if (checkValidInput() === null) {
+            return null;
+        }
 
         props.addEmployee({
             photo,
@@ -83,7 +100,6 @@ const AddEmployee = (props: any) => {
         });
 
         props.history.push('/');
-
     };
 
     useEffect(() => {
@@ -178,23 +194,31 @@ const AddEmployee = (props: any) => {
     )
 };
 
+interface employeeType {
+    photo: string;
+    fullName: string;
+    department: string;
+    email: string;
+    telephone: string
+}
+
 const mapStateToProps = (state: any) => {
     return {
         auth: state.firebase.auth,
-        users: state.firestore.ordered.users,
+        employees: state.firestore.ordered.employees,
     }
 };
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        addEmployee: (employee: any) => dispatch(addEmployee(employee))
+        addEmployee: (employee: employeeType) => dispatch(addEmployee(employee))
     }
 };
 
 export default compose (
     connect(mapStateToProps, mapDispatchToProps),
     firestoreConnect([
-        { collection: 'users'}
+        { collection: 'employees'}
     ])
 )(
     // @ts-ignore

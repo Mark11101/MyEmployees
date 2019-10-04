@@ -5,7 +5,15 @@ import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 
-const Dashboard = (props: any) => {
+interface propsType {
+    employees: any;
+    auth: {
+        email: string;
+        uid: string
+    }
+}
+
+const Dashboard = (props: propsType): object => {
 
     const { employees, auth } = props;
 
@@ -22,7 +30,7 @@ const Dashboard = (props: any) => {
     )
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any): object => {console.log(state);
     return {
         employees: state.firestore.ordered.employees,
         auth: state.firebase.auth

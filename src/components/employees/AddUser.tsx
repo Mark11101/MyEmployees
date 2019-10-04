@@ -2,12 +2,18 @@ import * as React from 'react';
 import { useState} from "react";
 import { connect } from "react-redux";
 import { signUp } from "../../store/actions/authActions";
-import {useEffect} from "react";
+import { useEffect } from "react";
 import $ from "jquery";
-import {compose} from "redux";
-import {firestoreConnect} from "react-redux-firebase";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 
-const AddUser = (props: any) => {
+interface propsType {
+    users: any;
+    signUp: any;
+    history: any;
+}
+
+const AddUser = (props: propsType) => {
 
     const { users } = props;
 
@@ -15,7 +21,7 @@ const AddUser = (props: any) => {
     const [email, setEmail]       = useState('');
     const [password, setPassword] = useState('');
 
-    const handleChange = (e: any): void => {
+    const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
 
         if (e.currentTarget.id === "fullName") {
             setFullName(e.currentTarget.value);
@@ -32,8 +38,8 @@ const AddUser = (props: any) => {
 
     let emailAlreadyExist: boolean = false;
 
-    const checkIfEmailAlreadyExist = () => {
-        users && users.map((user: any) => {
+    const checkIfEmailAlreadyExist = (): any => {
+        users && users.map((user: { email: string }) => {
 
             if (user.email === email) {
                 emailAlreadyExist = true;
@@ -43,14 +49,21 @@ const AddUser = (props: any) => {
         })
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): any => {
-
-        e.preventDefault();
+    const checkValidInput = (): any => {
 
         checkIfEmailAlreadyExist();
 
         if (emailAlreadyExist) {
             alert("Email already exist!");
+            return null;
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): any => {
+
+        e.preventDefault();
+
+        if (checkValidInput() === null) {
             return null;
         }
 
@@ -121,7 +134,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        signUp: (newUser: any) => dispatch(signUp(newUser))
+        signUp: (newUser: { email: string; password: string}) => dispatch(signUp(newUser))
     }
 };
 

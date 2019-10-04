@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 import SignedInLinks from './SignedInLinks';
 import { connect } from 'react-redux';
 
-const Navbar = (props: any) => {
+interface propsType {
+    auth: {
+        uid: string
+    }
+}
+
+const Navbar = (props: propsType) => {
 
     const { auth } = props;
 
@@ -18,7 +24,7 @@ const Navbar = (props: any) => {
                     <span className="navbar-toggler-icon"/>
                 </button>
 
-                <div className="collapse navbar-collapse mr-5" id="navbarSupportedContent">
+                <div className="collapse navbar-collapse ml-5" id="navbarSupportedContent">
                     { auth.uid ? <SignedInLinks auth={auth} /> : null }
                 </div>
             </div>
@@ -27,11 +33,9 @@ const Navbar = (props: any) => {
 };
 
 const mapStateToProps = (state: any) => {
-
     return {
         auth: state.firebase.auth
     }
 };
 
-export default
-    connect(mapStateToProps)(Navbar);
+export default connect(mapStateToProps)(Navbar);

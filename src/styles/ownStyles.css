@@ -1,0 +1,36 @@
+.logOut:hover {
+    cursor: pointer;
+}
+
+#img-upload {
+    width: 200px;
+}
+
+.userIcon {
+    border-radius: 7px;
+    background-color: #e91e63;
+    color: #ffffff;
+}
+
+.addButtons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media screen and (max-width: 991px) {
+    .addButtons {
+        display: block;
+    }
+}
+
+.deleteEmployee {
+    display: none;
+}
+
+.employeeSummary:hover .deleteEmployee {
+    display: block;
+}
+
+.deleteEmployee:hover {
+    color: #ec407a;
+}

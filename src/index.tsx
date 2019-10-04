@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import './index.css';
+import './styles/index.css';
 import App from "./App";
 import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from './store/reducers/rootReducer';

@@ -2,7 +2,14 @@ const initState = {
     authError: ''
 };
 
-const authReducer = (state = initState, action: any) => {
+interface logAction {
+    type: string;
+    err: {
+        message: string
+    }
+}
+
+const authReducer = (state = initState, action: logAction) => {
     if (action.type === "LOGIN_ERROR") {
         console.log("login error");
         return {

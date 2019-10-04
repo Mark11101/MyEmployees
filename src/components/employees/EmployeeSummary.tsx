@@ -1,12 +1,41 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
+import {connect} from "react-redux";
+import {deleteEmployee} from "../../store/actions/employeeActions";
 
-const getEmployees = (department: string, employees: any): object => {
-    return employees && employees.map((employee: { department: string, fullName: string, id: number }) => {
+interface propsType {
+    employees: any;
+    deleteEmployee: any;
+}
+
+interface employeesType {
+    id: string;
+    photo: string;
+    fullName: string;
+    department: string;
+    email: string;
+    telephone: string
+}
+
+const handleDelete = (props: propsType, employee: employeesType, e: React.MouseEvent<HTMLElement>): void => {
+    e.preventDefault();
+    props.deleteEmployee(employee);
+};
+
+const getEmployees = (department: string, props: propsType): object => {
+
+    const { employees } = props;
+
+    return employees && employees.map((employee: employeesType) => {
         if (employee.department === department) {
             return (
                 <Link to={'/employee/' + employee.id} key={employee.id}>
-                    <li className="list-group-item">{employee.fullName}</li>
+                    <li className="employeeSummary list-group-item d-flex justify-content-between align-items-center">
+                        {employee.fullName}
+                        <i className="deleteEmployee material-icons delete" onClick={(e) => handleDelete(props, employee, e)}>
+                            delete_forever
+                        </i>
+                    </li>
                 </Link>
             )
         } else {
@@ -15,7 +44,8 @@ const getEmployees = (department: string, employees: any): object => {
     })
 };
 
-const EmployeeSummary = ({employees}: any) => {
+const EmployeeSummary = (props: propsType) => {
+
     return (
         <div>
             <div className="card">
@@ -23,7 +53,7 @@ const EmployeeSummary = ({employees}: any) => {
                     Frontend
                 </div>
                 <ul className="list-group list-group-flush">
-                    {getEmployees('Frontend', employees)}
+                    {getEmployees('Frontend', props)}
                 </ul>
             </div>
             <div className="card">
@@ -31,7 +61,7 @@ const EmployeeSummary = ({employees}: any) => {
                     Backend
                 </div>
                 <ul className="list-group list-group-flush">
-                    {getEmployees('Backend', employees)}
+                    {getEmployees('Backend', props)}
                 </ul>
             </div>
             <div className="card">
@@ -39,7 +69,7 @@ const EmployeeSummary = ({employees}: any) => {
                     Design
                 </div>
                 <ul className="list-group list-group-flush">
-                    {getEmployees('Design', employees)}
+                    {getEmployees('Design', props)}
                 </ul>
             </div>
             <div className="card">
@@ -47,7 +77,7 @@ const EmployeeSummary = ({employees}: any) => {
                     HR
                 </div>
                 <ul className="list-group list-group-flush">
-                    {getEmployees('HR', employees)}
+                    {getEmployees('HR', props)}
                 </ul>
             </div>
             <div className="card">
@@ -55,7 +85,7 @@ const EmployeeSummary = ({employees}: any) => {
                     Testing
                 </div>
                 <ul className="list-group list-group-flush">
-                    {getEmployees('Testing', employees)}
+                    {getEmployees('Testing', props)}
                 </ul>
             </div>
             <div className="card">
@@ -63,11 +93,17 @@ const EmployeeSummary = ({employees}: any) => {
                     Management
                 </div>
                 <ul className="list-group list-group-flush">
-                    {getEmployees('Management', employees)}
+                    {getEmployees('Management', props)}
                 </ul>
             </div>
         </div>
     )
 };
 
-export default EmployeeSummary;
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        deleteEmployee: (employee: employeesType) => dispatch(deleteEmployee(employee))
+    }
+};
+
+export default connect(null, mapDispatchToProps)(EmployeeSummary);
