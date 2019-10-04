@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const getEmployees = (department: string, employees: any): object => {
     return employees && employees.map((employee: { department: string, fullName: string, id: number }) => {
-        if (employee.department === department) {console.log(employee.id);
+        if (employee.department === department) {
             return (
                 <Link to={'/employee/' + employee.id} key={employee.id}>
                     <li className="list-group-item">{employee.fullName}</li>

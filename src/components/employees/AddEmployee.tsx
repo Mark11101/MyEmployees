@@ -4,10 +4,12 @@ import $ from 'jquery';
 import { connect } from "react-redux";
 import { addEmployee } from "../../store/actions/employeeActions";
 import { Redirect } from "react-router-dom";
+import {compose} from "redux";
+import {firestoreConnect} from "react-redux-firebase";
 
 const AddEmployee = (props: any) => {
 
-    const { auth, authError } = props;
+    const { auth, users } = props;
 
     const [photo, setPhoto]           = useState('');
     const [fullName, setFullName]     = useState('');
@@ -38,16 +40,38 @@ const AddEmployee = (props: any) => {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    let emailAlreadyExist: boolean = false;
+
+    const checkIfEmailAlreadyExist = () => {
+        users && users.map((user: any) => {
+
+            if (user.email === email) {
+                emailAlreadyExist = true;
+            }
+
+            return null;
+        })
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): any => {
 
         e.preventDefault();
 
+        checkIfEmailAlreadyExist();
+
+        if (emailAlreadyExist) {
+            alert("Email already exist!");
+            return null;
+        }
+
         if (!fullName.match(/[a-zA-zА-Я-а-я]/g)) {
             alert("Input your fullname!");
+            return null;
         }
 
         if (photo !== "" && !photo.match(/^https?:\/\//i)) {
             alert("Not valid URL!");
+            return null;
         }
 
         props.addEmployee({
@@ -80,7 +104,7 @@ const AddEmployee = (props: any) => {
                 readURL(this);
             });
 
-            $('#inputFullName').bind('keyup blur',function(){
+            $('#fullName').bind('keyup blur',function(){
                 let node: any = $(this);
                 node.val(node.val().replace(/[^a-zA-Zа-яА-Я' ]+$/g,'') ); }
             );
@@ -156,7 +180,8 @@ const AddEmployee = (props: any) => {
 
 const mapStateToProps = (state: any) => {
     return {
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        users: state.firestore.ordered.users,
     }
 };
 
@@ -166,4 +191,12 @@ const mapDispatchToProps = (dispatch: any) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddEmployee);
+export default compose (
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect([
+        { collection: 'users'}
+    ])
+)(
+    // @ts-ignore
+    AddEmployee
+)

@@ -21,12 +21,18 @@ body {
     margin-bottom: -1px;
 }
 
+a {
+    color: #ffffff;
+}
+
 a:hover {
     cursor: pointer;
+    color: #e91e63;
+    text-decoration: none;
 }
 
 .userIcon {
-    border-radius: 15%;
+    border-radius: 7px;
     background-color: #e91e63;
     color: #ffffff;
 }

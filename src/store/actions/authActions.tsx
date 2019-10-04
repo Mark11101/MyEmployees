@@ -41,11 +41,6 @@ export const signUp = (newUser: any) => {
         //const firebase  = getFirebase();
         const firestore = getFirestore();
 
-        const fullName  = newUser.fullName.split(" ");
-        const firstName = fullName[1];
-        const lastName  = fullName[0];
-        const initials  = lastName[0] + firstName[0];
-
         secondaryApp.auth().createUserWithEmailAndPassword(
             newUser.email,
             newUser.password
@@ -53,7 +48,6 @@ export const signUp = (newUser: any) => {
             secondaryApp.auth().signOut();
             return firestore.collection('users').add({
                 ...newUser,
-                initials: initials,
                 type: "visitor",
             })
         }).then(() => {

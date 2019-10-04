@@ -27,19 +27,29 @@ const SignIn = (props: any) => {
 
     const getEmployeeId = () => {
 
-        let employeeId;
+        let employeeId = 0;
 
         employees && employees.map((employee: any) => {
-            if (auth.email === employee.email) {console.log("fff");
+
+            if (auth.email === employee.email) {
                 employeeId = employee.id;
             }
+
+            return null;
         });
 
         return employeeId
     };
 
     if (auth.uid) {
-        return <Redirect to={'/employee/' + getEmployeeId()}/>
+
+        let id = getEmployeeId();
+
+        if (id === 0) {
+            return <Redirect to='/'/>
+        } else {
+            return <Redirect to={'/employee/' + id}/>
+        }
     }
 
     return (

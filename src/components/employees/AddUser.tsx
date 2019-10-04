@@ -4,10 +4,12 @@ import { connect } from "react-redux";
 import { signUp } from "../../store/actions/authActions";
 import {useEffect} from "react";
 import $ from "jquery";
+import {compose} from "redux";
+import {firestoreConnect} from "react-redux-firebase";
 
 const AddUser = (props: any) => {
 
-    const { auth, authError } = props;
+    const { users } = props;
 
     const [fullName, setFullName] = useState('');
     const [email, setEmail]       = useState('');
@@ -28,9 +30,29 @@ const AddUser = (props: any) => {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    let emailAlreadyExist: boolean = false;
+
+    const checkIfEmailAlreadyExist = () => {
+        users && users.map((user: any) => {
+
+            if (user.email === email) {
+                emailAlreadyExist = true;
+            }
+
+            return null;
+        })
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): any => {
 
         e.preventDefault();
+
+        checkIfEmailAlreadyExist();
+
+        if (emailAlreadyExist) {
+            alert("Email already exist!");
+            return null;
+        }
 
         props.signUp({
             fullName,
@@ -43,7 +65,7 @@ const AddUser = (props: any) => {
 
     useEffect(() => {
         $(document).ready( function() {
-            $('#inputFullName').bind('keyup blur',function(){
+            $('#fullName').bind('keyup blur',function(){
                 let node: any = $(this);
                 node.val(node.val().replace(/[^a-zA-Zа-яА-Я' ]+$/g,'') ); }
             );
@@ -86,9 +108,6 @@ const AddUser = (props: any) => {
                 </div>
 
                 <button type="submit" className="btn btn-primary my-3">Add</button>
-                <div className="text-danger text-center pb-4">
-                    { authError && email !== '' ? <p>{authError}</p> : null }
-                </div>
             </form>
         </div>
     )
@@ -96,8 +115,7 @@ const AddUser = (props: any) => {
 
 const mapStateToProps = (state: any) => {
     return {
-        auth: state.firebase.auth,
-        authError: state.auth.authError
+        users: state.firestore.ordered.users,
     }
 };
 
@@ -107,4 +125,12 @@ const mapDispatchToProps = (dispatch: any) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddUser);
+export default compose (
+    connect(mapStateToProps, mapDispatchToProps),
+    firestoreConnect([
+        { collection: 'users'}
+    ])
+)(
+    // @ts-ignore
+    AddUser
+)

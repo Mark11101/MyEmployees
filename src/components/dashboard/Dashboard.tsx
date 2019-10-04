@@ -23,7 +23,6 @@ const Dashboard = (props: any) => {
 };
 
 const mapStateToProps = (state: any) => {
-
     return {
         employees: state.firestore.ordered.employees,
         auth: state.firebase.auth

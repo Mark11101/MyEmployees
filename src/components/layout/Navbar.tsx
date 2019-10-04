@@ -1,10 +1,7 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
 import SignedInLinks from './SignedInLinks';
-import SignedOutLinks from './SignedOutLinks';
 import { connect } from 'react-redux';
-import {compose} from "redux";
-import {firestoreConnect} from "react-redux-firebase";
 
 const Navbar = (props: any) => {
 
@@ -22,7 +19,7 @@ const Navbar = (props: any) => {
                 </button>
 
                 <div className="collapse navbar-collapse mr-5" id="navbarSupportedContent">
-                    { auth.uid ? <SignedInLinks auth={auth} /> : <SignedOutLinks /> }
+                    { auth.uid ? <SignedInLinks auth={auth} /> : null }
                 </div>
             </div>
         </nav>
