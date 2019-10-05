@@ -33,4 +33,5 @@
 
 .deleteEmployee:hover {
     color: #ec407a;
+    cursor: pointer;
 }

@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
 import {connect} from "react-redux";
-import {deleteEmployee} from "../../store/actions/employeeActions";
+import {deleteEmployee, updateEmployee} from "../../store/actions/employeeActions";
 
 interface propsType {
     employees: any;
+    auth: any;
+    users: any
     deleteEmployee: any;
 }
 
@@ -17,84 +19,129 @@ interface employeesType {
     telephone: string
 }
 
+const onDragStart = (e: any, id: any) => {
+    e.dataTransfer.setData("id", id);
+};
+
+const onDragOver = (e: any) => {
+    e.preventDefault();
+};
+
+const onDrop = (e: any, cat: any, props: any) => {
+    let id = e.dataTransfer.getData("id");
+
+    props.employees.filter((employee: any) => {
+        if (employee.fullName === id) {
+            props.updateEmployee(employee, cat);
+        }
+        return null;
+    });
+};
+
 const handleDelete = (props: propsType, employee: employeesType, e: React.MouseEvent<HTMLElement>): void => {
     e.preventDefault();
     props.deleteEmployee(employee);
 };
 
-const getEmployees = (department: string, props: propsType): object => {
+const EmployeeSummary = (props: propsType) => {
 
-    const { employees } = props;
+    const { employees, auth, users } = props;
 
-    return employees && employees.map((employee: employeesType) => {
-        if (employee.department === department) {
-            return (
+    let departments: any = {
+        Frontend: [],
+        Backend: [],
+        Design: [],
+        HR: [],
+        Testing: [],
+        Management: []
+    };
+
+    let userIsAdmin: boolean = false;
+
+    const checkIfUserIsAdmin = () => {
+        users && users.map((user: { email: string; type: string }) => {
+
+            if ((auth.email === user.email) && user.type === "admin") {
+                userIsAdmin = true;
+            }
+
+            return null;
+        })
+    };
+
+    checkIfUserIsAdmin();
+
+    employees && employees.forEach((employee: any) => {
+        if (userIsAdmin) {
+            departments[employee.department].push(
                 <Link to={'/employee/' + employee.id} key={employee.id}>
-                    <li className="employeeSummary list-group-item d-flex justify-content-between align-items-center">
+                    <div onDragStart = {(e) => onDragStart(e, employee.fullName)}
+                         draggable
+                         className="employeeSummary list-group-item d-flex justify-content-between align-items-center"
+                    >
                         {employee.fullName}
                         <i className="deleteEmployee material-icons delete" onClick={(e) => handleDelete(props, employee, e)}>
                             delete_forever
                         </i>
-                    </li>
+                    </div>
                 </Link>
-            )
+            );
         } else {
-            return null;
+            departments[employee.department].push(
+                <Link to={'/employee/' + employee.id} key={employee.id}>
+                    <div onDragStart = {(e) => onDragStart(e, employee.fullName)}
+                         className="employeeSummary list-group-item d-flex justify-content-between align-items-center"
+                    >
+                        {employee.fullName}
+                    </div>
+                </Link>
+            );
         }
-    })
-};
-
-const EmployeeSummary = (props: propsType) => {
+    });
 
     return (
-        <div>
-            <div className="card">
+        <div className="container-drag">
+            <div className="card Frontend" onDragOver={(e) => onDragOver(e)}
+                                           onDrop={(e) => onDrop(e, "Frontend", props)}>
                 <div className="card-header">
                     Frontend
                 </div>
-                <ul className="list-group list-group-flush">
-                    {getEmployees('Frontend', props)}
-                </ul>
+                {departments.Frontend}
             </div>
-            <div className="card">
+            <div className="card Backend" onDragOver={(e) => onDragOver(e)}
+                                          onDrop={(e) => onDrop(e, "Backend", props)}>
                 <div className="card-header">
                     Backend
                 </div>
-                <ul className="list-group list-group-flush">
-                    {getEmployees('Backend', props)}
-                </ul>
+                {departments.Backend}
             </div>
-            <div className="card">
+            <div className="card Design" onDragOver={(e) => onDragOver(e)}
+                 onDrop={(e) => onDrop(e, "Design", props)}>
                 <div className="card-header">
                     Design
                 </div>
-                <ul className="list-group list-group-flush">
-                    {getEmployees('Design', props)}
-                </ul>
+                {departments.Design}
             </div>
-            <div className="card">
+            <div className="card HR" onDragOver={(e) => onDragOver(e)}
+                 onDrop={(e) => onDrop(e, "HR", props)}>
                 <div className="card-header">
                     HR
                 </div>
-                <ul className="list-group list-group-flush">
-                    {getEmployees('HR', props)}
-                </ul>
+                {departments.HR}
             </div>
-            <div className="card">
+            <div className="card Testing" onDragOver={(e) => onDragOver(e)}
+                 onDrop={(e) => onDrop(e, "Testing", props)}>
                 <div className="card-header">
                     Testing
                 </div>
-                <ul className="list-group list-group-flush">
-                    {getEmployees('Testing', props)}
-                </ul>
+                {departments.Testing}
             </div>
-            <div className="card">
+            <div className="card Management" onDragOver={(e) => onDragOver(e)}
+                 onDrop={(e) => onDrop(e, "Management", props)}>
                 <div className="card-header">
                     Management
                 </div>
-                <ul className="list-group list-group-flush">
-                    {getEmployees('Management', props)}
-                </ul>
+                {departments.Management}
             </div>
         </div>
     )
@@ -102,7 +149,8 @@ const EmployeeSummary = (props: propsType) => {
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        deleteEmployee: (employee: employeesType) => dispatch(deleteEmployee(employee))
+        deleteEmployee: (employee: employeesType) => dispatch(deleteEmployee(employee)),
+        updateEmployee: (employee: employeesType, department: any) => dispatch(updateEmployee(employee, department))
     }
 };
 

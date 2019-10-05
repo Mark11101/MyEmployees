@@ -2,8 +2,6 @@ import * as React from 'react';
 import { useState} from "react";
 import { connect } from "react-redux";
 import { signUp } from "../../store/actions/authActions";
-import { useEffect } from "react";
-import $ from "jquery";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
@@ -17,17 +15,12 @@ const AddUser = (props: propsType) => {
 
     const { users } = props;
 
-    const [fullName, setFullName] = useState('');
     const [email, setEmail]       = useState('');
     const [password, setPassword] = useState('');
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>): void => {
 
-        if (e.currentTarget.id === "fullName") {
-            setFullName(e.currentTarget.value);
-        }
-
-        else if (e.currentTarget.id === "password") {
+        if (e.currentTarget.id === "password") {
             setPassword(e.currentTarget.value);
         }
 
@@ -68,7 +61,6 @@ const AddUser = (props: propsType) => {
         }
 
         props.signUp({
-            fullName,
             email,
             password
         });
@@ -76,29 +68,10 @@ const AddUser = (props: propsType) => {
         props.history.push('/');
     };
 
-    useEffect(() => {
-        $(document).ready( function() {
-            $('#fullName').bind('keyup blur',function(){
-                let node: any = $(this);
-                node.val(node.val().replace(/[^a-zA-Zа-яА-Я' ]+$/g,'') ); }
-            );
-        });
-    });
-
     return (
         <div className="container bg-light rounded">
             <h3 className="py-4">Add user</h3>
             <form onSubmit={handleSubmit}>
-
-                <div className="form-group">
-                    <input type="text"
-                           className="form-control inputFullName"
-                           id="fullName"
-                           placeholder="Full name"
-                           onChange={handleChange}
-                           required
-                    />
-                </div>
 
                 <div className="form-group">
                     <input type="email"

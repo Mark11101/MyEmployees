@@ -36,3 +36,21 @@ export const deleteEmployee = (employee: { id: string }) => {
         });
     }
 };
+
+export const updateEmployee = (employee: any, department: any) => {
+    return (dispatch: any, getState: any, { getFirestore }: any) => {
+
+        const firestore = getFirestore();
+
+        let employeeCollection = firestore.collection("employees").doc(employee.id);
+
+        return employeeCollection.update({
+            department: department
+        }).then(() => {
+            console.log("department was renamed!");
+        }).catch(function() {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ");
+        });
+    }
+};
