@@ -19,20 +19,20 @@ interface employeesType {
     telephone: string
 }
 
-const onDragStart = (e: any, id: any) => {
+const onDragStart = (e: React.DragEvent<HTMLDivElement>, id: string): void => {
     e.dataTransfer.setData("id", id);
 };
 
-const onDragOver = (e: any) => {
+const onDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault();
 };
 
-const onDrop = (e: any, cat: any, props: any) => {
+const onDrop = (e: React.DragEvent<HTMLDivElement>, department: string, props: any): void => {
     let id = e.dataTransfer.getData("id");
 
-    props.employees.filter((employee: any) => {
+    props.employees.filter((employee: employeesType) => {
         if (employee.fullName === id) {
-            props.updateEmployee(employee, cat);
+            props.updateEmployee(employee, department);
         }
         return null;
     });
@@ -58,7 +58,7 @@ const EmployeeSummary = (props: propsType) => {
 
     let userIsAdmin: boolean = false;
 
-    const checkIfUserIsAdmin = () => {
+    const checkIfUserIsAdmin = (): void => {
         users && users.map((user: { email: string; type: string }) => {
 
             if ((auth.email === user.email) && user.type === "admin") {
@@ -71,7 +71,7 @@ const EmployeeSummary = (props: propsType) => {
 
     checkIfUserIsAdmin();
 
-    employees && employees.forEach((employee: any) => {
+    employees && employees.forEach((employee: employeesType) => {
         if (userIsAdmin) {
             departments[employee.department].push(
                 <Link to={'/employee/' + employee.id} key={employee.id}>

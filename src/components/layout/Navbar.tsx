@@ -16,7 +16,7 @@ const Navbar = (props: propsType) => {
     return (
         <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
             <div className="container">
-                <Link to='/' className="navbar-brand ml-5">My Employees</Link>
+                <Link to='/' className="navbar-brand ml-5"><span className="logo">My Employees</span></Link>
 
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
